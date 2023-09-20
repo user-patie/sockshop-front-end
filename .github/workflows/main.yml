@@ -1,1 +1,25 @@
-#
+name: Azure Connection Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  connect-to-azure:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run Azure Test Connection Workflow
+      uses: sockshop-front-end/.github/workflows/connexion-azure-test.yaml
+      
+    - name: Configure kubectl
+      run: |
+        az aks get-credentials --name  k8-aks-cluster --resource-group  rg-kubernetes-cluster
+
+    - name: Test AKS Connectivity
+      run: |
+        kubectl get nodes
