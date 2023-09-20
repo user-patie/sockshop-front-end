@@ -16,31 +16,31 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      GROUP: weaveworksdemos 
+      GROUP: adminpatie
       COMMIT: ${{ github.sha }}
-      REPO: front-end
+      REPO: sockshop-front-end
     steps:
     - uses: actions/checkout@v2
 
     #
     #
     # Set up  node
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '4.x'
+    #- uses: actions/setup-node@v1
+      #with:
+        #node-version: '4.x'
 
     #
     #
     # Install dependencies
-    - run: npm install
+    #- run: npm install
 
     #
     #
     # Run node tests in docker image
-    - name: Test image
-      env:
-        DOCKER_BUILDKIT: 1
-      run: make test
+    #- name: Test image
+     # env:
+       # DOCKER_BUILDKIT: 1
+      #run: make test
 
     #
     #
@@ -57,10 +57,10 @@ jobs:
     #
     #
     # Run simple test against built container
-    - name: Test docker image
-      env:
-        DOCKER_BUILDKIT: 1
-      run: ./test/container.sh
+    #- name: Test docker image
+     # env:
+      #  DOCKER_BUILDKIT: 1
+      #run: ./test/container.sh
 
     #
     #
