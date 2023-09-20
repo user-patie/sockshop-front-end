@@ -1,23 +1,76 @@
-name: Azure Connection Test
+name: ci
 
 on:
   push:
     branches:
-      - main
+    - "*"  # run for branches
+    tags:
+    - "*"  # run for tags
+  pull_request:
+    branches:
+    - "*"  # run for branches
+    tags:
+    - "*"  # run for tags
 
 jobs:
-  connect-to-azure:
+  test:
     runs-on: ubuntu-latest
-
+    env:
+      GROUP: adminpatie
+      COMMIT: ${{ github.sha }}
+      REPO: sockshop-front-end
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-      
-    - name: Configure kubectl
-      run: |
-        az aks get-credentials --name  k8-aks-cluster --resource-group  rg-kubernetes-cluster
+    - uses: actions/checkout@v2
 
-    - name: Test AKS Connectivity
-      run: |
-        kubectl get nodes
-        #
+    #
+    #
+    # Set up  node
+    #- uses: actions/setup-node@v1
+      #with:
+        #node-version: '4.x'
+
+    #
+    # #
+    # Install dependencies
+    #- run: npm install
+
+    #
+    #
+    # Run node tests in docker image
+    #- name: Test image
+     # env:
+       # DOCKER_BUILDKIT: 1
+      #run: make test
+
+    #
+    #
+    # Build docker image for service
+    - name: Build docker image
+      uses: docker/build-push-action@v1
+      with:
+        push: false
+        repository: ${{ env.GROUP }}/${{ env.REPO }}
+        tag_with_ref: true
+        tag_with_sha: true
+        tags: ${{ github.sha }}
+
+    #
+    #
+    # Run simple test against built container
+    #- name: Test docker image
+     # env:
+      #  DOCKER_BUILDKIT: 1
+      #run: ./test/container.sh
+
+    #
+    #
+    # Push to dockerhub
+    - name: Push to Docker Hub
+      uses: docker/build-push-action@v1
+      if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master'
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASS }}
+        repository: ${{ env.GROUP }}/${{ env.REPO }}
+        tag_with_ref: true
+        tag_with_sha: true
