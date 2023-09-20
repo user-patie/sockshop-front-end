@@ -20,3 +20,4 @@ jobs:
     - name: Test AKS Connectivity
       run: |
         kubectl get nodes
+        #
