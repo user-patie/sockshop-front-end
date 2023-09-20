@@ -12,9 +12,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Run Azure Test Connection Workflow
-      uses: sockshop-front-end/.github/workflows/connexion-azure-test.yaml
       
     - name: Configure kubectl
       run: |
